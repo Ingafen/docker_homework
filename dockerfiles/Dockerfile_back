@@ -1,0 +1,12 @@
+# syntax=docker/dockerfile:1
+FROM python:3.7-alpine3.14
+LABEL maintainer="Victor_Vedeneev@epam.com" org.label-schema.description="Backend for docker homework, developed with Python and Django"
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+WORKDIR /code
+COPY requirements.txt /code/
+RUN apk add --no-cache g++ gcc libxml2-dev libxslt-dev postgresql-dev curl
+RUN pip install -r requirements.txt
+EXPOSE 8000
+HEALTHCHECK CMD curl --fail http://localhost:8000/api/v1/lib/author/ || exit 1  
+COPY . /code/

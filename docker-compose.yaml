@@ -1,0 +1,46 @@
+version: '2.4'
+networks:
+  front-back:
+    ipam:
+      config:
+        - subnet: 192.168.214.0/24
+  back-db:
+    ipam:
+      config:
+        - subnet: 192.168.200.0/24
+volumes:
+  db_vol:
+    driver: local
+services:
+  database:
+    build: 
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile_db
+    restart: "unless-stopped"    
+    networks:
+      - back-db
+    volumes:
+      - db_vol:/var/lib/postgresql/data
+  backend:
+    build: 
+      context: ./lib_catalog/.
+      dockerfile: ./dockerfiles/Dockerfile_back
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    restart: "unless-stopped"
+    depends_on:
+      - database
+    networks:
+      front-back:          
+          ipv4_address: 192.168.214.214
+      back-db:
+  frontend:
+    build: 
+      context: ./frontend/.
+      dockerfile: ./dockerfiles/Dockerfile_front
+    restart: "unless-stopped"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - front-back
