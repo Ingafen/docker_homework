@@ -15,7 +15,7 @@ import BBKCreateUpdate from './BBKCreateUpdate'
 import KeyWordList from './KeyWordList'
 import KeyWordCreateUpdate from './KeyWordCreateUpdate'
 import './App.css'
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';  
 
 const BaseLayout = () => (
   <div className="container-fluid">
